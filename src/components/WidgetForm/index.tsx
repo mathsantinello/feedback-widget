@@ -6,6 +6,7 @@ import thoughtImageUrl from '../../assets/thought.svg';
 import { useState } from "react";
 import FeedbackTypeStep from "./Steps/FeedbackTypeStep";
 import FeedbackContentStep from "./Steps/FeedbackContentStep";
+import FeedbackSuccessStep from "./Steps/FeedbackSuccessStep";
 
 export const feedBackTypes = {
     BUG:{
@@ -44,17 +45,25 @@ export type FeedbackType = keyof typeof feedBackTypes
 
 function WidgetForm(){
     const [feedbackType,setFeedbackType] = useState<FeedbackType|null>(null);
+    const [feedbackSent, setFeedbackSent] = useState(false)
 
     const handleRestartFeedback = ()=>{
         setFeedbackType(null);
+        setFeedbackSent(false);
     }
+
     return(
         <div className="bg-zinc-900 p-4 relative rounded-2xl mb-4 flex flex-col items-center shadow-lg text-white w-[calc(100vw-2rem)] md:w-auto">
-            
-           {!feedbackType? ( <FeedbackTypeStep onFeedbackTypeChanged={setFeedbackType}/>):(
-                <FeedbackContentStep feedBackTypePassed={feedbackType} feedbackRestartRequest={handleRestartFeedback}/>
-            )
-            }
+            { feedbackSent ? (
+                <FeedbackSuccessStep feedbackRestartRequest={handleRestartFeedback}/>
+            ):(
+                <>
+                {!feedbackType? ( <FeedbackTypeStep onFeedbackTypeChanged={setFeedbackType}/>):(
+                <FeedbackContentStep feedBackTypePassed={feedbackType} feedbackRestartRequest={handleRestartFeedback} onFeedbackSent={()=>setFeedbackSent(true)}/>
+                )}
+                </> 
+            )}
+          
             <h1 className="text-xs text-neutral-400">
                 Feito com ♥ pela <a className="underline underline-offset-2" href="https://rocketseat.com.br" target="_blank">Rocketseat</a>
             </h1>
